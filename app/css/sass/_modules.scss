@@ -1,0 +1,50 @@
+////////// buttons ////////
+
+.btn {
+	display: block;
+	line-height: 1;
+	margin: 0;
+	border: none;
+}
+.btn-primary {
+	background-color: $firstC;
+	color: #fff;
+}
+.btn-second {
+	background-color: $secondC;
+	color: #fff;
+}
+.btn-small {
+	@include font-size(0.8);
+	padding: 5px 10px;
+}
+.btn-med {
+	@include font-size(1);
+	font-weight: bold;
+	padding: 10px 15px;
+}
+.btn-big {
+	@include font-size(1.4);
+	font-weight: bold;
+	padding: 15px 20px;
+}
+
+///////// NAVs /////////
+
+.nav-horz {
+	background-color: $firstC;
+	display: table;
+	li {
+		display: table-cell;
+		width: auto;
+		a {
+			padding: 5px;
+			@include font-size(0.8);
+			text-align: center;
+			display: block;
+		}
+	}
+	li.last a {
+		border-right: none;
+	}
+}

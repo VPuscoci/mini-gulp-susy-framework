@@ -1,0 +1,18 @@
+{
+  "name": "CL-prod",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "~3.5.2",
+    "browser-sync": "~0.9.0",
+    "gulp-imagemin": "~0.6.1",
+    "gulp-ruby-sass": "~0.5.0",
+    "gulp-autoprefixer": "~0.0.7",
+    "gulp-uglify": "~0.3.0",
+    "gulp-concat": "~2.2.0",
+    "gulp-jshint": "~1.5.1"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  }
+}

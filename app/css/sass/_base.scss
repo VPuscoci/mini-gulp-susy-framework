@@ -1,0 +1,57 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+// font vars
+$firstF: 'Open Sans', sans-serif;
+$secondF: Georgia, serif;
+$thirdF: Arial, sans-serif;
+
+// color vars
+$firstC: #fff;
+$secondC: #000;
+$thirdC: #eee;
+
+// Settings
+// Set base font size
+$rem-base: 16px !default;
+// Set line height ratio base
+$line-height-base: 26px !default;
+// Vertical rhythm ratio
+$type-rhythm-ratio: 1.14 !default;
+// Desktop Media Query
+$desktop: "(min-width: 1024px)" !default;
+// Tablet Media Query
+$tablet: "(min-width: 768px) and (max-width: 1023px)" !default;
+// Mobile Media Query
+$mobile: "(max-width: 767px)" !default;
+
+$susy: (
+	columns: 12,
+	gutters: 1/4,
+	math: fluid,
+	output: float,
+	gutter-position: right,
+);
+
+$map: layout(12 1/4 fluid float inside);
+
+body {
+	background-color: #fff;
+}
+.container {
+	@include container(100%);
+}
+section {
+	@extend .container;
+}
+select {}
+
+input[type="checkbox"] {}
+
+input[type="text"] {}
+
+textarea {
+	resize: none;
+}
+
+input[type="submit"] {}
+
+button {}

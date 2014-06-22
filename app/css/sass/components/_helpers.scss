@@ -1,0 +1,244 @@
+/////////  MY STUFF //////////
+// Wraps interior content in a media query
+@mixin breakpoint($querystring) {
+  $valid: true;
+  @if type-of($querystring) != "string" {
+    @warn "querystring: #{$querystring} is not a string";
+    $valid: false;
+  }
+  @if $valid == true {
+    @media #{$querystring} {
+      @content;
+    }
+  }
+}
+
+@mixin wrap{
+  width: $wrap;
+  margin: 0 auto;
+  float: none;
+}
+
+@mixin font-size($sizeValue: 1) {
+  font-size: ($sizeValue * 16) + px;
+  font-size: $sizeValue + rem;
+}
+
+//////// TYPOGRAPHY ///////
+
+// Safe Rem
+@mixin safe-rem($property: font-size, $num: 14){
+  $valid: true;
+  @if type-of($property) != "string" {
+    @warn "property: #{$property} is not a string";
+    $valid: false;
+  }
+  @if type-of($num) != "number" {
+    @warn "num: #{$num} is not a number";
+    $valid: false;
+  }
+  @if $valid == true {
+    #{$property}: #{_strip-unit($num)}px;
+    #{$property}: rem-calc($num);
+  }
+}
+
+// Typographic Rhythm Mixin
+@mixin type($rem-base: $rem-base,$line-height-base: $line-height-base, $type-rhythm-ratio: $type-rhythm-ratio){
+  $valid: true;
+  @if type-of($rem-base) != "number" {
+    @warn "rem-base: #{$rem-base} is not a number";
+    $valid: false;
+  }
+  @if type-of($line-height-base) != "number" {
+    @warn "line-height: #{$line-height-base} is not a number";
+    $valid: false;
+  }
+  @if type-of($type-rhythm-ratio) != "number" {
+    @warn "type-rhythm-ratio: #{$type-rhythm-ratio} is not a number";
+    $valid: false;
+  }
+  @if $valid == true {
+    // Scale type at $type-rhythm-ratio
+    $h6-size: round(_strip-unit($rem-base) * $type-rhythm-ratio);
+    $h5-size: round($h6-size * $type-rhythm-ratio);
+    $h4-size: round($h5-size * $type-rhythm-ratio);
+    $h3-size: round($h4-size * $type-rhythm-ratio);
+    $h2-size: round($h3-size * $type-rhythm-ratio);
+    $h1-size: round($h2-size * $type-rhythm-ratio);
+
+    @if unit($line-height-base) == "px" {
+      // Set line-height
+      body {
+        line-height: _strip-unit($line-height-base) / _strip-unit($rem-base);
+      }
+    } @else {
+      body {
+        line-height: $line-height-base;
+      }
+    }
+
+    // Set heading sizes to size variables
+    h1 {
+      @include safe-rem(font-size, $h1-size);
+    }
+
+    h2 {
+      @include safe-rem(font-size, $h2-size);
+    }
+
+    h3 {
+      @include safe-rem(font-size, $h3-size);
+    }
+
+    h4 {
+      @include safe-rem(font-size, $h4-size);
+    }
+
+    h5 {
+      @include safe-rem(font-size, $h5-size);
+    }
+
+    h6 {
+      @include safe-rem(font-size, $h6-size);
+    }
+
+    p {
+      @include safe-rem(font-size, $rem-base);
+    }
+  }
+}
+
+///////// TRIANGLES //////////
+
+@mixin triangle ($size, $color, $direction) {
+  height: 0;
+  width: 0;
+
+  @if ($direction == up) or ($direction == down) or ($direction == right) or ($direction == left) {
+    border-color: transparent;
+    border-style: solid;
+    border-width: $size / 2;
+
+    @if $direction == up {
+      border-bottom-color: $color;
+
+    } @else if $direction == right {
+      border-left-color:   $color;
+
+    } @else if $direction == down {
+      border-top-color:    $color;
+
+    } @else if $direction == left {
+      border-right-color:  $color;
+    }
+  }
+
+  @else if ($direction == up-right) or ($direction == up-left) {
+    border-top: $size solid $color;
+
+    @if $direction == up-right {
+      border-left:  $size solid transparent;
+
+    } @else if $direction == up-left {
+      border-right: $size solid transparent;
+    }
+  }
+
+  @else if ($direction == down-right) or ($direction == down-left) {
+    border-bottom: $size solid $color;
+
+    @if $direction == down-right {
+      border-left:  $size solid transparent;
+
+    } @else if $direction == down-left {
+      border-right: $size solid transparent;
+    }
+  }
+}
+
+///////// GRADIENT /////////
+
+@mixin linear-gradient($pos, $G1, $G2: false,
+                       $G3: false, $G4: false,
+                       $G5: false, $G6: false,
+                       $G7: false, $G8: false,
+                       $G9: false, $G10: false,
+                       $deprecated-pos1: left top,
+                       $deprecated-pos2: left bottom,
+                       $fallback: false) {
+  // Detect what type of value exists in $pos
+  $pos-type: type-of(nth($pos, 1));
+  $pos-spec: null;
+  $pos-degree: null;
+
+  // If $pos is missing from mixin, reassign vars and add default position
+  @if ($pos-type == color) or (nth($pos, 1) == "transparent")  {
+    $G10: $G9; $G9: $G8; $G8: $G7; $G7: $G6; $G6: $G5;
+     $G5: $G4; $G4: $G3; $G3: $G2; $G2: $G1; $G1: $pos;
+     $pos: null;
+  }
+
+  @if $pos {
+    $positions: _linear-positions-parser($pos);
+    $pos-degree: nth($positions, 1);
+    $pos-spec:   nth($positions, 2);
+  }
+
+  $full: compact($G1, $G2, $G3, $G4, $G5, $G6, $G7, $G8, $G9, $G10);
+
+  // Set $G1 as the default fallback color
+  $fallback-color: nth($G1, 1);
+
+  // If $fallback is a color use that color as the fallback color
+  @if (type-of($fallback) == color) or ($fallback == "transparent") {
+    $fallback-color: $fallback;
+  }
+
+  background-color: $fallback-color;
+  background-image: _deprecated-webkit-gradient(linear, $deprecated-pos1, $deprecated-pos2, $full); // Safari <= 5.0
+  background-image: -webkit-linear-gradient($pos-degree $full); // Safari 5.1+, Chrome
+  background-image: unquote("linear-gradient(#{$pos-spec}#{$full})");
+}
+
+/////// TIMINGS FOR TRANSITIONS ////////
+
+// CSS cubic-bezier timing functions. Timing functions courtesy of jquery.easie (github.com/jaukia/easie)
+// Timing functions are the same as demo'ed here: http://jqueryui.com/demos/effect/easing.html
+
+// EASE IN
+$ease-in-quad:      cubic-bezier(0.550,  0.085, 0.680, 0.530);
+$ease-in-cubic:     cubic-bezier(0.550,  0.055, 0.675, 0.190);
+$ease-in-quart:     cubic-bezier(0.895,  0.030, 0.685, 0.220);
+$ease-in-quint:     cubic-bezier(0.755,  0.050, 0.855, 0.060);
+$ease-in-sine:      cubic-bezier(0.470,  0.000, 0.745, 0.715);
+$ease-in-expo:      cubic-bezier(0.950,  0.050, 0.795, 0.035);
+$ease-in-circ:      cubic-bezier(0.600,  0.040, 0.980, 0.335);
+$ease-in-back:      cubic-bezier(0.600, -0.280, 0.735, 0.045);
+
+// EASE OUT
+$ease-out-quad:     cubic-bezier(0.250,  0.460, 0.450, 0.940);
+$ease-out-cubic:    cubic-bezier(0.215,  0.610, 0.355, 1.000);
+$ease-out-quart:    cubic-bezier(0.165,  0.840, 0.440, 1.000);
+$ease-out-quint:    cubic-bezier(0.230,  1.000, 0.320, 1.000);
+$ease-out-sine:     cubic-bezier(0.390,  0.575, 0.565, 1.000);
+$ease-out-expo:     cubic-bezier(0.190,  1.000, 0.220, 1.000);
+$ease-out-circ:     cubic-bezier(0.075,  0.820, 0.165, 1.000);
+$ease-out-back:     cubic-bezier(0.175,  0.885, 0.320, 1.275);
+
+// EASE IN OUT
+$ease-in-out-quad:  cubic-bezier(0.455,  0.030, 0.515, 0.955);
+$ease-in-out-cubic: cubic-bezier(0.645,  0.045, 0.355, 1.000);
+$ease-in-out-quart: cubic-bezier(0.770,  0.000, 0.175, 1.000);
+$ease-in-out-quint: cubic-bezier(0.860,  0.000, 0.070, 1.000);
+$ease-in-out-sine:  cubic-bezier(0.445,  0.050, 0.550, 0.950);
+$ease-in-out-expo:  cubic-bezier(1.000,  0.000, 0.000, 1.000);
+$ease-in-out-circ:  cubic-bezier(0.785,  0.135, 0.150, 0.860);
+$ease-in-out-back:  cubic-bezier(0.680, -0.550, 0.265, 1.550);
+
+////// opacity
+@mixin opacity($opacity) {
+  opacity: $opacity;
+  $opacity-ie: $opacity * 100;
+  filter: alpha(opacity=$opacity-ie); //IE8
+}
